@@ -47,6 +47,7 @@ namespace Compress {
                     flush();
                 }
                 x = ((x / stat) << N) + (x % stat) + stats.prefixSumArray[ch];
+
                 assert(std::upper_bound(stats.prefixSumArray.begin(), stats.prefixSumArray.end(),
                                         x & ((1ull << N) - 1)) - 1 - stats.prefixSumArray.begin() == ch);
             }
@@ -81,7 +82,7 @@ namespace Compress {
                 x <<= 16;
                 uint16_t val;
                 pos -= 2;
-                std::copy_n(in.data() + pos, 2, (byte *) (&val));
+                std::copy_n(in.data() + pos, sizeof(val), (byte *) (&val));
                 x |= val;
             };
             get();
@@ -97,6 +98,7 @@ namespace Compress {
                     get();
                 }
                 stats.inc(ch);
+                // std::cout << (int)ch << " ";
             }
 
             return ans;
@@ -106,7 +108,7 @@ namespace Compress {
         static constexpr size_t N = 12;
         static constexpr size_t STATS_SIZE = 256;
 
-        using size_type = uint32_t;
+        using size_type = size_t;
 
         struct Stats {
 
@@ -114,28 +116,40 @@ namespace Compress {
             std::array<uint64_t, STATS_SIZE + 1> prefixSumArray{};
 
             size_t total_size{0};
+            size_t fake_size{0};
 
             uint64_t statsByN(byte ch) {
-                const auto val = stats[ch] * (1ull << N) / (total_size + 1);
+                const auto val = stats[ch] * (1ull << N) / (fake_size);
                 return (val > 0 ? val : stats[ch] ? 1 : 0);
             }
 
             void rebuild() {
-                prefixSumArray[0] = 0;
-                for (size_t i = 1; i < prefixSumArray.size(); ++i) {
-                    prefixSumArray[i] = prefixSumArray[i - 1] + statsByN(i - 1);
+                fake_size = total_size;
+                for (size_t i = 0 ; i < stats.size(); ++i) {
+                    if (stats[i] * (1ull << N) / (total_size) == 0) {
+                        fake_size += ((total_size) / (1ull << N) - stats[i]);
+                    }
                 }
+                size_t val = 0;
+                for (size_t i = 0; i < stats.size(); ++i) {
+                    prefixSumArray[i] = val;
+                    val += statsByN(i);
+                }
+                prefixSumArray.back() = val;
+
             }
 
             void dec(byte ch) {
                 stats[ch]--;
                 total_size--;
+                fake_size--;
                 rebuild();
             }
 
             void inc(byte ch) {
                 stats[ch]++;
                 total_size++;
+                fake_size++;
                 rebuild();
             }
         };

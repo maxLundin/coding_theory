@@ -277,7 +277,7 @@ namespace Compress {
 
     private:
         template<size_t N>
-        static bytes decodeN(size_t, const bytes &in) {
+        static bytes decodeN(size_t, const bytes &) {
             throw std::logic_error("sizeof(Types...) < n");
         }
 

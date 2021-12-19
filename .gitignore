@@ -1,0 +1,23 @@
+# IDE
+*.user
+.idea
+*.cbp
+.vscode
+
+# Google tests
+googletest-build/
+googletest-download/
+googletest-src/
+lib/
+
+# Cmake
+build
+CMakeCache.txt
+CMakeFiles/
+cmake-build*
+cmake_install.cmake
+Makefile
+.ninja_deps
+.ninja_log
+build.ninja
+rules.ninja

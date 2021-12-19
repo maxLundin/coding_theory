@@ -54,8 +54,11 @@ int main(int argc, char **argv) {
     const auto output = [&]() {
         if (argv[1][0] == 'e') {
             return coder.encode(data1);
-        } else {
+        } else if (argv[1][0] == 'd') {
             return coder.decode(data1);
+        } else {
+            std::cerr << "e/d for type" << std::endl;
+            return bytes{};
         }
     }();
 

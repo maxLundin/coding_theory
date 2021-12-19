@@ -31,6 +31,7 @@ struct huffman_tree_node {
     static std::pair<huffman_tree_node *, size_t>
     decode_tree(std::string &encoded, int start_pos = 4, bool print_bits = false);
 
+    virtual ~huffman_tree_node() = default;
 private:
     std::string print_with_indent(int indent);
 

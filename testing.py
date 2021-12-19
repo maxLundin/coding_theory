@@ -55,12 +55,12 @@ def call_all(encode_command, decode_command, jpeg_dir, tmp_dir, res_dir):
 
 
 if __name__ == '__main__':
-    jpeg30_dir = 'jpeg30'
-    jpeg80_dir = 'jpeg80'
-    tmp30_dir = 'tmp30'
-    tmp80_dir = 'tmp80'
-    res30_dir = 'res30'
-    res80_dir = 'res80'
+    jpeg30_dir = 'dataset/jpeg30'
+    jpeg80_dir = 'dataset/jpeg80'
+    tmp30_dir = 'dataset/tmp30'
+    tmp80_dir = 'dataset/tmp80'
+    res30_dir = 'dataset/res30'
+    res80_dir = 'dataset/res80'
     encode_command = './max_coder e %s %s'
     decode_command = './max_coder d %s %s'
 
