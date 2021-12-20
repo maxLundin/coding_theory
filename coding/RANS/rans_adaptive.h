@@ -46,10 +46,15 @@ namespace Compress {
                 if (x >= (stat << D)) {
                     flush();
                 }
-                x = ((x / stat) << N) + (x % stat) + stats.prefixSumArray[ch];
+                const auto newx = ((x / stat) << N) + (x % stat) + stats.prefixSumArray[ch];
 
-                assert(std::upper_bound(stats.prefixSumArray.begin(), stats.prefixSumArray.end(),
-                                        x & ((1ull << N) - 1)) - 1 - stats.prefixSumArray.begin() == ch);
+
+                const auto ch1 = std::upper_bound(stats.prefixSumArray.begin(), stats.prefixSumArray.end(),
+                                                  newx & ((1ull << N) - 1)) - 1 - stats.prefixSumArray.begin();
+
+                assert(ch1 == ch);
+
+                x = newx;
             }
 
             flush();
@@ -98,7 +103,6 @@ namespace Compress {
                     get();
                 }
                 stats.inc(ch);
-                // std::cout << (int)ch << " ";
             }
 
             return ans;
@@ -127,7 +131,7 @@ namespace Compress {
                 fake_size = total_size;
                 for (size_t i = 0 ; i < stats.size(); ++i) {
                     if (stats[i] * (1ull << N) / (total_size) == 0) {
-                        fake_size += ((total_size) / (1ull << N) - stats[i]);
+                        fake_size += ((total_size) / (1ull << N) - stats[i] + 1);
                     }
                 }
                 size_t val = 0;
